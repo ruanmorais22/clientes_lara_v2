@@ -44,3 +44,13 @@ export interface Folder {
   created_at?: string;
   prompts?: Prompt[]; // Adicionando a propriedade prompts
 }
+
+export interface ChecklistItem {
+  id: string;
+  prompt_id: number;
+  text: string;
+  is_completed: boolean;
+  order: number;
+  created_at?: string;
+  updated_at?: string;
+}

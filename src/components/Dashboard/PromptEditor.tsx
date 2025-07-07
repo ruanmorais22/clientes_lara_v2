@@ -5,6 +5,8 @@ import { ArrowLeft, Upload, Save, Settings2, X, MessageSquare, Plus, Trash2 } fr
 import toast from 'react-hot-toast';
 import { BubbleChat } from 'flowise-embed-react';
 import { v4 as uuidv4 } from 'uuid';
+import { PendenciasTab } from './Tabs/PendenciasTab';
+import { ProjectDataTab } from './Tabs/ProjectDataTab';
 
 interface PromptEditorProps {
   promptId?: number;
@@ -43,6 +45,7 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
   const [showAIHelper, setShowAIHelper] = useState(false);
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [existingFieldIds, setExistingFieldIds] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState('main');
 
   const loadPrompt = useCallback(async () => {
     if (!promptId) return;
@@ -416,99 +419,145 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
 
           {/* Right Column - Main Fields */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-              <div className="space-y-6">
-                {/* Nome Field */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nome
-                  </label>
-                  <input
-                    type="text"
-                    name="Nome"
-                    value={defaultFields.Nome || ''}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="Digite o nome aqui..."
-                  />
-                </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+              <div className="border-b border-gray-200 dark:border-gray-700">
+                <nav className="flex -mb-px space-x-6 px-6">
+                  <button
+                    onClick={() => setActiveTab('main')}
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'main'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Principal
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('checklist')}
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'checklist'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Pendências
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('importantInfo')}
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'importantInfo'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Dados do Projeto
+                  </button>
+                </nav>
+              </div>
 
-                {/* Prompt Field */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Prompt
-                  </label>
-                  <div className="relative">
-                    <textarea
-                      name="Prompt"
-                      value={defaultFields.Prompt || ''}
-                      onChange={handleChange}
-                      rows={24}
-                      className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Digite o prompt aqui..."
-                      style={{ minHeight: '600px' }}
-                    />
-                    <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
-                      {defaultFields.Prompt?.length || 0} caracteres
+              <div className="p-6">
+                {activeTab === 'main' && (
+                  <div className="space-y-6">
+                    {/* Nome Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nome
+                      </label>
+                      <input
+                        type="text"
+                        name="Nome"
+                        value={defaultFields.Nome || ''}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        placeholder="Digite o nome aqui..."
+                      />
                     </div>
-                  </div>
-                </div>
 
-                {/* Custom Fields */}
-                <div className="space-y-4 border-t pt-6 mt-8">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">Chunks</h3>
-                    <button
-                      onClick={addCustomField}
-                      className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Adicionar Campo
-                    </button>
-                  </div>
-                  {customFields.map((field) => (
-                    <div key={field.id} className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg space-y-4">
-                      <div className="flex gap-4 items-start">
-                        <div className="flex-1 space-y-2">
-                          <input
-                            type="text"
-                            value={field.label}
-                            onChange={(e) => updateCustomField(field.id, 'label', e.target.value)}
-                            placeholder="Nome do campo"
-                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                          />
-                          <div className="relative">
-                            <textarea
-                              value={field.value}
-                              onChange={(e) => updateCustomField(field.id, 'value', e.target.value)}
-                              placeholder="Digite o valor aqui..."
-                              rows={6}
-                              className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            />
-                            <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
-                              {field.value.length} caracteres
+                    {/* Prompt Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Prompt
+                      </label>
+                      <div className="relative">
+                        <textarea
+                          name="Prompt"
+                          value={defaultFields.Prompt || ''}
+                          onChange={handleChange}
+                          rows={24}
+                          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                          placeholder="Digite o prompt aqui..."
+                          style={{ minHeight: '600px' }}
+                        />
+                        <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
+                          {defaultFields.Prompt?.length || 0} caracteres
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Custom Fields */}
+                    <div className="space-y-4 border-t pt-6 mt-8">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">Chunks</h3>
+                        <button
+                          onClick={addCustomField}
+                          className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Adicionar Campo
+                        </button>
+                      </div>
+                      {customFields.map((field) => (
+                        <div key={field.id} className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg space-y-4">
+                          <div className="flex gap-4 items-start">
+                            <div className="flex-1 space-y-2">
+                              <input
+                                type="text"
+                                value={field.label}
+                                onChange={(e) => updateCustomField(field.id, 'label', e.target.value)}
+                                placeholder="Nome do campo"
+                                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-medium bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                              />
+                              <div className="relative">
+                                <textarea
+                                  value={field.value}
+                                  onChange={(e) => updateCustomField(field.id, 'value', e.target.value)}
+                                  placeholder="Digite o valor aqui..."
+                                  rows={6}
+                                  className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                />
+                                <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
+                                  {field.value.length} caracteres
+                                </div>
+                              </div>
                             </div>
+                            <button
+                              onClick={() => removeCustomField(field.id)}
+                              className="p-2 text-red-600 hover:text-red-800 transition-colors"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <div className="flex justify-end">
+                            <button
+                              onClick={() => saveCustomField(field)}
+                              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                            >
+                              <Save className="w-4 h-4" />
+                              Salvar Campo
+                            </button>
                           </div>
                         </div>
-                        <button
-                          onClick={() => removeCustomField(field.id)}
-                          className="p-2 text-red-600 hover:text-red-800 transition-colors"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
-                      <div className="flex justify-end">
-                        <button
-                          onClick={() => saveCustomField(field)}
-                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                        >
-                          <Save className="w-4 h-4" />
-                          Salvar Campo
-                        </button>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
+                {activeTab === 'checklist' && promptId && <PendenciasTab promptId={promptId} />}
+                {activeTab === 'importantInfo' && promptId && (
+                  <ProjectDataTab
+                    notes={prompt.notes}
+                    handleChange={handleChange}
+                  />
+                )}
               </div>
             </div>
           </div>
