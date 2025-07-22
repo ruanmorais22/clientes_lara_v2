@@ -27,6 +27,8 @@ export interface Prompt {
   folder_id?: string;
   created_at?: string;
   updated_at?: string;
+  prompt_relatorio?: string;
+  prompt_analise?: string;
 }
 
 export interface CustomField {

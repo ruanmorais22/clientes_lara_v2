@@ -7,6 +7,8 @@ import { BubbleChat } from 'flowise-embed-react';
 import { v4 as uuidv4 } from 'uuid';
 import { PendenciasTab } from './Tabs/PendenciasTab';
 import { ProjectDataTab } from './Tabs/ProjectDataTab';
+import { RelatorioTab } from './Tabs/RelatorioTab';
+import { AnaliseTab } from './Tabs/AnaliseTab';
 
 interface PromptEditorProps {
   promptId?: number;
@@ -452,6 +454,26 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
                   >
                     Dados do Projeto
                   </button>
+                  <button
+                    onClick={() => setActiveTab('relatorio')}
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'relatorio'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Prompt de Relatório
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('analise')}
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'analise'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Prompt de Análise
+                  </button>
                 </nav>
               </div>
 
@@ -555,6 +577,18 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
                 {activeTab === 'importantInfo' && promptId && (
                   <ProjectDataTab
                     notes={prompt.notes}
+                    handleChange={handleChange}
+                  />
+                )}
+                {activeTab === 'relatorio' && promptId && (
+                  <RelatorioTab
+                    prompt_relatorio={prompt.prompt_relatorio}
+                    handleChange={handleChange}
+                  />
+                )}
+                {activeTab === 'analise' && promptId && (
+                  <AnaliseTab
+                    prompt_analise={prompt.prompt_analise}
                     handleChange={handleChange}
                   />
                 )}
