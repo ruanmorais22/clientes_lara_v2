@@ -16,12 +16,17 @@ export function Dashboard() {
   const [currentFolder, setCurrentFolder] = useState<string | null>(null);
   const [showNewFolderInput, setShowNewFolderInput] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (selectedProject) {
+      loadData();
+    }
+  }, [selectedProject]);
 
   const loadData = async () => {
+    if (!selectedProject) return;
+
     try {
       // Load folders
       const { data: foldersData, error: foldersError } = await supabase
@@ -31,10 +36,11 @@ export function Dashboard() {
 
       if (foldersError) throw foldersError;
 
-      // Load prompts
+      // Load prompts for the selected project
       const { data: promptsData, error: promptsError } = await supabase
         .from('Prompts')
-        .select('*');
+        .select('*')
+        .eq('channel', selectedProject);
 
       if (promptsError) throw promptsError;
 
@@ -74,11 +80,55 @@ export function Dashboard() {
     }
   };
 
+  if (!selectedProject) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+        <h1 className="text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">Selecione um Projeto</h1>
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-8">
+          <button
+            onClick={() => setSelectedProject('instagram')}
+            className="w-64 h-64 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+          >
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" className="w-24 h-24" />
+            <span>Instagram</span>
+          </button>
+          <button
+            onClick={() => setSelectedProject('whatsapp')}
+            className="w-64 h-64 bg-gradient-to-br from-green-400 to-teal-500 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+          >
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo" className="w-24 h-24" />
+            <span>WhatsApp</span>
+          </button>
+          <button
+            onClick={() => setSelectedProject('youtube')}
+            className="w-64 h-64 bg-red-600 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+          >
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube Logo" className="w-24 h-24" />
+            <span>YouTube</span>
+          </button>
+          <button
+            onClick={() => setSelectedProject('sofia')}
+            className="w-64 h-64 bg-blue-500 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+          >
+            <img src="/sofia-logo.png" alt="Sofia Logo" className="w-24 h-24" />
+            <span>Sofia</span>
+          </button>
+          <button
+            onClick={() => setSelectedProject('fabrica_posts')}
+            className="w-64 h-64 bg-gray-700 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+          >
+            <img src="/fabrica_posts.png" alt="Fabrica de Posts Logo" className="w-24 h-24" />
+            <span>Fabrica de Posts</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (selectedPromptId || isCreating) {
     return (
       <PromptEditor
-        promptId={selectedPromptId}
-        folders={folders}
+        promptId={selectedPromptId ?? undefined}
         onBack={() => {
           setSelectedPromptId(null);
           setIsCreating(false);
@@ -198,6 +248,13 @@ export function Dashboard() {
               </button>
             </div>
           )}
+          <button
+            onClick={() => setSelectedProject(null)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Trocar Projeto
+          </button>
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"

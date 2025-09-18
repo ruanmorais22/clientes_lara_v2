@@ -159,15 +159,15 @@ export function FolderCard({ folder, onClick, onUpdate }: FolderCardProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:-translate-y-1 w-full">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:-translate-y-1 w-full min-h-[120px]">
       <div
-        className="p-4 flex items-center gap-3"
+        className="p-6 flex items-center gap-4 h-full"
         onClick={onClick}
       >
-        <FolderIcon className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+        <FolderIcon className="w-10 h-10 text-blue-500 dark:text-blue-400" />
         <div className="flex-1">
-          <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100">{folder.name}</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{folder.prompts ? folder.prompts.length : 0} projetos</p>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{folder.name}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{folder.prompts ? folder.prompts.length : 0} projetos</p>
         </div>
         {folder.id !== 'root' && (
           <div>
