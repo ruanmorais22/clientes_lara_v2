@@ -108,14 +108,14 @@ export function Dashboard() {
           </button>
           <button
             onClick={() => setSelectedProject('sofia')}
-            className="w-64 h-64 bg-blue-500 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+            className="w-64 h-64 bg-[#CADC2B] text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
           >
             <img src="/sofia-logo.png" alt="Sofia Logo" className="w-24 h-24" />
             <span>Sofia</span>
           </button>
           <button
             onClick={() => setSelectedProject('fabrica_posts')}
-            className="w-64 h-64 bg-gray-700 text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
+            className="w-64 h-64 bg-[#C23EBE] text-white p-4 rounded-lg text-2xl font-bold hover:scale-105 transition-transform flex flex-col items-center justify-center shadow-lg space-y-4"
           >
             <img src="/fabrica_posts.png" alt="Fabrica de Posts Logo" className="w-24 h-24" />
             <span>Fabrica de Posts</span>
