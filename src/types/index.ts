@@ -24,6 +24,12 @@ export interface Prompt {
   'token evolution': string | null;
   'id_follow': string | null;
   'id_grupo': string | null;
+  prompt_relatorio?: string | null;
+  prompt_analise?: string | null;
+  link_planilha?: string | null;
+  lara_grupo?: string | null;
+  prompt_config?: boolean | null;
+  channel?: string | null;
   folder_id?: string;
   created_at?: string;
   updated_at?: string;

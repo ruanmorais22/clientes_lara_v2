@@ -31,7 +31,10 @@ const fieldLabels: Record<string, string> = {
   'apikey flowise': 'API Key Flowise',
   'instace_id evolution': 'ID da Instância Evolution',
   'token evolution': 'Token Evolution',
-  'Projeto': 'Projeto'
+  'Projeto': 'Projeto',
+  'lara_grupo': 'Lara Grupo',
+  'prompt_config': 'Prompt Config',
+  'channel': 'Canal'
 };
 
 export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
@@ -43,6 +46,7 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
   const [showAIHelper, setShowAIHelper] = useState(false);
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [existingFieldIds, setExistingFieldIds] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<'prompt' | 'relatorio' | 'analise'>('prompt');
 
   const loadPrompt = useCallback(async () => {
     if (!promptId) return;
@@ -90,10 +94,10 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setPrompt(prev => ({ ...prev, [name]: value }));
+    setPrompt(prev => ({ ...prev, [name as keyof Prompt]: value }));
   }, []);
 
-  const handleToggle = useCallback((name: string) => {
+  const handleToggle = useCallback((name: keyof Prompt) => {
     setPrompt(prev => ({ ...prev, [name]: !prev[name] }));
   }, []);
 
@@ -301,6 +305,12 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
     'token evolution': '',
     'id_follow': '',
     'id_grupo': '',
+    'prompt_relatorio': '',
+    'prompt_analise': '',
+    'link_planilha': '',
+    'lara_grupo': '',
+    'prompt_config': false,
+    'channel': '',
     ...prompt
   }), [prompt]);
 
@@ -327,9 +337,48 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
       'token evolution',
       'id_follow',
       'id_grupo',
-      'Projeto'
+      'Projeto',
+      'lara_grupo',
+      'prompt_config',
+      'channel'
     ]
   }), []);
+
+  const renderPromptTextarea = () => {
+    let name: keyof Prompt;
+    let value: string | null | undefined;
+
+    switch (activeTab) {
+      case 'relatorio':
+        name = 'prompt_relatorio';
+        value = defaultFields.prompt_relatorio;
+        break;
+      case 'analise':
+        name = 'prompt_analise';
+        value = defaultFields.prompt_analise;
+        break;
+      default:
+        name = 'Prompt';
+        value = defaultFields.Prompt;
+    }
+
+    return (
+      <div className="relative">
+        <textarea
+          name={name}
+          value={value || ''}
+          onChange={handleChange}
+          rows={24}
+          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          placeholder={`Digite o ${name.replace('_', ' de ')} aqui...`}
+          style={{ minHeight: '600px' }}
+        />
+        <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
+          {value?.length || 0} caracteres
+        </div>
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -433,25 +482,58 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
                   />
                 </div>
 
-                {/* Prompt Field */}
+                {/* Link Planilha Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Prompt
+                    Link da Planilha
                   </label>
-                  <div className="relative">
-                    <textarea
-                      name="Prompt"
-                      value={defaultFields.Prompt || ''}
-                      onChange={handleChange}
-                      rows={24}
-                      className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none font-mono text-sm leading-relaxed bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Digite o prompt aqui..."
-                      style={{ minHeight: '600px' }}
-                    />
-                    <div className="absolute bottom-3 right-3 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">
-                      {defaultFields.Prompt?.length || 0} caracteres
-                    </div>
+                  <input
+                    type="text"
+                    name="link_planilha"
+                    value={defaultFields.link_planilha || ''}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="Cole o link da planilha aqui..."
+                  />
+                </div>
+
+                {/* Prompt Tabs */}
+                <div>
+                  <div className="border-b border-gray-200 dark:border-gray-700 mb-4">
+                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                      <button
+                        onClick={() => setActiveTab('prompt')}
+                        className={`${
+                          activeTab === 'prompt'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                      >
+                        Prompt Principal
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('relatorio')}
+                        className={`${
+                          activeTab === 'relatorio'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                      >
+                        Prompt de Relatório
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('analise')}
+                        className={`${
+                          activeTab === 'analise'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                      >
+                        Prompt de Análise
+                      </button>
+                    </nav>
                   </div>
+                  {renderPromptTextarea()}
                 </div>
 
                 {/* Custom Fields */}
@@ -547,7 +629,7 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
                                   type="checkbox"
                                   className="sr-only peer"
                                   checked={value}
-                                  onChange={() => handleToggle(key)}
+                                  onChange={() => handleToggle(key as keyof Prompt)}
                                 />
                                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                               </label>
@@ -586,15 +668,11 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
           <BubbleChat
             chatflowid="55308fec-c6c2-4b64-b793-d1e73f35ec3f"
             apiHost="https://flowise.profinho-automacao.com"
-            theme={{    
+            theme={{
               button: {
                 backgroundColor: '#3B81F6',
-                left: 20,
-                bottom: 20,
                 size: 48,
-                dragAndDrop: true,
                 iconColor: 'white',
-                customIconSrc: 'https://vvofozvpckjkrzcikvnb.supabase.co/storage/v1/object/public/imagens//backgroundStep.png.png'
               },
               chatWindow: {
                 showTitle: true,
