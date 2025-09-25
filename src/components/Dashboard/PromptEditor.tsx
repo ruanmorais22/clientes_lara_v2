@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface PromptEditorProps {
   promptId?: number;
+  channel?: string | null;
   onBack: () => void;
 }
 
@@ -37,7 +38,7 @@ const fieldLabels: Record<string, string> = {
   'channel': 'Canal'
 };
 
-export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
+export function PromptEditor({ promptId, channel, onBack }: PromptEditorProps) {
   const [prompt, setPrompt] = useState<Partial<Prompt>>({});
   const [loading, setLoading] = useState(!!promptId);
   const [uploading, setUploading] = useState(false);
@@ -85,6 +86,12 @@ export function PromptEditor({ promptId, onBack }: PromptEditorProps) {
   useEffect(() => {
     loadPrompt();
   }, [loadPrompt]);
+
+  useEffect(() => {
+    if (channel && !promptId) {
+      setPrompt(prev => ({ ...prev, channel }));
+    }
+  }, [channel, promptId]);
 
   useEffect(() => {
     if (prompt.thumbnail) {

@@ -129,6 +129,7 @@ export function Dashboard() {
     return (
       <PromptEditor
         promptId={selectedPromptId ?? undefined}
+        channel={isCreating ? selectedProject : undefined}
         onBack={() => {
           setSelectedPromptId(null);
           setIsCreating(false);
