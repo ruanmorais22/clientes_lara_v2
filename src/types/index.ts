@@ -1,52 +1,41 @@
-export interface Prompt {
-  id: number;
-  Nome: string;
-  Prompt: string;
-  'Quebra de mensagens': boolean;
-  'Quantidade de blocos': number | null;
-  'chave api OpenAi': string;
-  'Delay entre as mensagens': number | null;
-  'Plataforma': string;
-  'cliente': string;
-  'thumbnail': string;
-  'notes': string;
-  'id_instancia_botconversa': string;
-  'apiKey_instancia_botconversa': string;
-  'id_despedida': string;
-  'instancia_evolution': string;
-  'Projeto': string;
-  'chave_api': string | null;
-  'chatflow id': string | null;
-  'url flowise': string | null;
-  'url evolution': string | null;
-  'apikey flowise': string | null;
-  'instace_id evolution': string | null;
-  'token evolution': string | null;
-  'id_follow': string | null;
-  'id_grupo': string | null;
-  prompt_relatorio?: string | null;
-  prompt_analise?: string | null;
-  link_planilha?: string | null;
-  lara_grupo?: string | null;
-  prompt_config?: boolean | null;
-  channel?: string | null;
-  folder_id?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface CustomField {
+export interface Project {
   id: string;
-  prompt_id: number;
-  label: string;
-  value: string;
+  name: string;
+  thumbnail?: string;
+  prompt?: string;
+  folder_id: string;
   created_at?: string;
   updated_at?: string;
+  notes?: string;
+  'Quebra de mensagens'?: boolean;
+  'Quantidade de blocos'?: number;
+  'chave api OpenAi'?: string;
+  'Delay entre as mensagens'?: number;
+  'Plataforma'?: string;
+  'cliente'?: string;
+  'id_instancia_botconversa'?: string;
+  'apiKey_instancia_botconversa'?: string;
+  'id_despedida'?: string;
+  'instancia_evolution'?: string;
+  'id_grupo'?: string;
+  'chave_api'?: string;
+  'chatflow id'?: string;
+  'url flowise'?: string;
+  'url evolution'?: string;
+  'apikey flowise'?: string;
+  'instace_id evolution'?: string;
+  'token evolution'?: string;
+  'id_follow'?: string;
+  'prompt_relatorio'?: string;
+  'prompt_analise'?: string;
+  'lara_grupo'?: string;
+  'link_planilha'?: string;
+  'prompt_config'?: boolean;
 }
 
 export interface Folder {
   id: string;
   name: string;
+  category: string;
   created_at?: string;
-  prompts?: Prompt[]; // Adicionando a propriedade prompts
 }

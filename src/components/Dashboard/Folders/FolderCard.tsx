@@ -1,214 +1,41 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { Folder as FolderIcon, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import React from 'react';
 import { Folder } from '../../../types';
-import { supabase } from '../../../services/supabase';
-import toast from 'react-hot-toast';
+import { Folder as FolderIcon, Edit3, Trash2 } from 'lucide-react';
 
 interface FolderCardProps {
   folder: Folder;
   onClick: () => void;
-  onUpdate: () => void;
+  onEdit: (e: React.MouseEvent) => void;
+  onDelete: (e: React.MouseEvent) => void;
 }
 
-export function FolderCard({ folder, onClick, onUpdate }: FolderCardProps) {
-  const [showMenu, setShowMenu] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(folder.name);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (showMenu && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setMenuPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.left + window.scrollX - 110
-      });
-    }
-  }, [showMenu]);
-
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditing(true);
-    setShowMenu(false);
-  };
-
-  const handleDeleteClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowMenu(false);
-    setShowDeleteConfirm(true);
-  };
-
-  const handleConfirmDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      const { error } = await supabase
-        .from('folders')
-        .delete()
-        .eq('id', folder.id);
-
-      if (error) throw error;
-
-      toast.success('Pasta excluída com sucesso!');
-      onUpdate();
-    } catch (error: any) {
-      toast.error('Erro ao excluir pasta');
-    } finally {
-      setShowDeleteConfirm(false);
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!newName.trim()) {
-      toast.error('O nome da pasta não pode estar vazio');
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('folders')
-        .update({ name: newName.trim() })
-        .eq('id', folder.id);
-
-      if (error) throw error;
-
-      toast.success('Nome da pasta atualizado com sucesso!');
-      setIsEditing(false);
-      onUpdate();
-    } catch (error: any) {
-      toast.error('Erro ao atualizar o nome da pasta');
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (showMenu && !buttonRef.current?.contains(event.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [showMenu]);
-
-  if (isEditing) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden w-full" onClick={(e) => e.stopPropagation()}>
-        <form onSubmit={handleSave} className="p-4">
-          <div className="flex items-center gap-3">
-            <FolderIcon className="w-6 h-6 text-blue-500 dark:text-blue-400" />
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="flex-1 p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              autoFocus
-            />
-          </div>
-          <div className="flex justify-end gap-2 mt-3">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded"
-            >
-              Salvar
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  }
-
-  if (showDeleteConfirm) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden w-full p-4" onClick={(e) => e.stopPropagation()}>
-        <div className="text-center">
-          <h4 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Confirmar exclusão</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Tem certeza que deseja excluir a pasta "{folder.name}"?<br />
-            Todos os projetos dentro dela serão movidos para "Sem pasta".
-          </p>
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={() => setShowDeleteConfirm(false)}
-              className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border dark:border-gray-600 rounded"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleConfirmDelete}
-              className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded"
-            >
-              Excluir
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+export const FolderCard: React.FC<FolderCardProps> = ({ folder, onClick, onEdit, onDelete }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform hover:-translate-y-1 w-full min-h-[120px]">
-      <div
-        className="p-6 flex items-center gap-4 h-full"
-        onClick={onClick}
-      >
-        <FolderIcon className="w-10 h-10 text-blue-500 dark:text-blue-400" />
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{folder.name}</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{folder.prompts ? folder.prompts.length : 0} projetos</p>
+    <div
+      onClick={onClick}
+      className="group bg-[#0F1E36] p-5 md:p-6 rounded-xl border border-white/5 hover:border-[#D4AF37]/50 shadow-lg cursor-pointer transition-all duration-300 active:scale-95 md:active:scale-100 md:hover:-translate-y-1"
+    >
+      <div className="flex items-start justify-between mb-3 md:mb-4">
+        <div className="p-2 md:p-3 rounded-lg bg-[#051024] text-[#D4AF37] border border-white/5 group-hover:bg-[#D4AF37] group-hover:text-[#051024] transition-colors">
+          <FolderIcon size={20} className="md:w-6 md:h-6" />
         </div>
-        {folder.id !== 'root' && (
-          <div>
-            <button
-              ref={buttonRef}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMenu(!showMenu);
-              }}
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            </button>
-            {showMenu && createPortal(
-              <div
-                className="fixed w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-[9999]"
-                style={{
-                  top: menuPosition.top,
-                  left: menuPosition.left,
-                }}
-              >
-                <button
-                  onClick={handleEditClick}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  Editar nome
-                </button>
-                <button
-                  onClick={handleDeleteClick}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Excluir pasta
-                </button>
-              </div>,
-              document.body
-            )}
-          </div>
-        )}
+        <div className="flex gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={onEdit}
+            className="text-slate-500 hover:text-[#D4AF37] p-2 transition-colors"
+          >
+            <Edit3 size={16} />
+          </button>
+          <button
+            onClick={onDelete}
+            className="text-slate-500 hover:text-red-500 p-2 transition-colors"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
       </div>
+      <h4 className="font-poppins font-semibold text-white text-base md:text-lg truncate mb-1">{folder.name}</h4>
+      <p className="text-xs text-slate-500">Toque para abrir</p>
     </div>
   );
-}
+};
