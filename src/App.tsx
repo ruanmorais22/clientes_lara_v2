@@ -73,17 +73,48 @@ function App() {
 
   const handleSaveProject = async (project: Project) => {
     try {
+      const projectData = {
+        'Nome': project.name,
+        'Prompt': project.prompt,
+        'thumbnail': project.thumbnail,
+        'notes': project.notes,
+        'prompt_analise': project.prompt_analise,
+        'prompt_relatorio': project.prompt_relatorio,
+        'Quebra de mensagens': project['Quebra de mensagens'],
+        'Quantidade de blocos': project['Quantidade de blocos'],
+        'chave api OpenAi': project['chave api OpenAi'],
+        'Delay entre as mensagens': project['Delay entre as mensagens'],
+        'Plataforma': project['Plataforma'],
+        'cliente': project['cliente'],
+        'id_instancia_botconversa': project['id_instancia_botconversa'],
+        'apiKey_instancia_botconversa': project['apiKey_instancia_botconversa'],
+        'id_despedida': project['id_despedida'],
+        'instancia_evolution': project['instancia_evolution'],
+        'id_grupo': project['id_grupo'],
+        'chave_api': project['chave_api'],
+        'chatflow id': project['chatflow id'],
+        'url flowise': project['url flowise'],
+        'url evolution': project['url evolution'],
+        'apikey flowise': project['apikey flowise'],
+        'instace_id evolution': project['instace_id evolution'],
+        'token evolution': project['token evolution'],
+        'id_follow': project['id_follow'],
+        'lara_grupo': project['lara_grupo'],
+        'link_planilha': project['link_planilha'],
+        'prompt_config': project['prompt_config'],
+      };
+
       if (editingProject) {
         const { error } = await supabase
           .from('Prompts')
-          .update(project)
+          .update(projectData)
           .eq('id', editingProject.id);
         if (error) throw error;
         toast.success('Projeto atualizado com sucesso!');
       } else {
         const { error } = await supabase
           .from('Prompts')
-          .insert([project]);
+          .insert([{ ...projectData, folder_id: currentFolder?.id }]);
         if (error) throw error;
         toast.success('Projeto criado com sucesso!');
       }
