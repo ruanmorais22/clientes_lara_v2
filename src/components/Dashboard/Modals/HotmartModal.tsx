@@ -272,34 +272,42 @@ export function HotmartModal({ isOpen, onClose, config, onChange }: HotmartModal
                             </button>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <input
-                              type="text"
-                              placeholder="Compra Aprovada"
-                              value={offer.flows.approved_purchase || ''}
-                              onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'approved_purchase')}
-                              className="p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Abandono de Carrinho"
-                              value={offer.flows.abandonment || ''}
-                              onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'abandonment')}
-                              className="p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Cartão Recusado"
-                              value={offer.flows.card_declined || ''}
-                              onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'card_declined')}
-                              className="p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Reembolso"
-                              value={offer.flows.refund || ''}
-                              onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'refund')}
-                              className="p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
-                            />
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Compra Aprovada</label>
+                              <input
+                                type="text"
+                                value={offer.flows.approved_purchase || ''}
+                                onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'approved_purchase')}
+                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Abandono de Carrinho</label>
+                              <input
+                                type="text"
+                                value={offer.flows.abandonment || ''}
+                                onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'abandonment')}
+                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Cartão Recusado</label>
+                              <input
+                                type="text"
+                                value={offer.flows.card_declined || ''}
+                                onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'card_declined')}
+                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Reembolso</label>
+                              <input
+                                type="text"
+                                value={offer.flows.refund || ''}
+                                onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'refund')}
+                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
