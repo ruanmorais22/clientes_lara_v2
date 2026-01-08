@@ -160,41 +160,44 @@ export function HotmartModal({ isOpen, onClose, config, onChange }: HotmartModal
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-[60]">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b dark:border-gray-700">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Configuração Hotmart</h3>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-0 md:p-4">
+      <div className="bg-[#0F1E36] border-0 md:border md:border-white/10 w-full h-full md:h-[90vh] md:w-[95%] md:max-w-4xl md:rounded-2xl shadow-2xl flex flex-col">
+        <div className="px-4 py-4 md:px-8 md:py-6 border-b border-white/10 flex justify-between items-center bg-[#0F1E36] md:rounded-t-2xl shrink-0">
+          <div>
+            <span className="text-[10px] md:text-xs text-[#D4AF37] font-bold uppercase tracking-widest block mb-1">Integração</span>
+            <h3 className="text-lg md:text-2xl font-poppins font-bold text-white truncate">Configuração Hotmart</h3>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="text-slate-500 hover:text-white p-2"
           >
-            <X className="w-5 h-5" />
+            <X size={24} />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto flex-1">
-          <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="flex-1 overflow-y-auto bg-[#051024]/50 p-4 md:p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
                 Client ID
               </label>
               <input
                 type="text"
                 value={config?.clientId || ''}
                 onChange={(e) => handleChange('clientId', e.target.value)}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full bg-[#051024] border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors placeholder-slate-700"
                 placeholder="Insira o Client ID"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
                 Client Secret
               </label>
               <input
                 type="password"
                 value={config?.clientSecret || ''}
                 onChange={(e) => handleChange('clientSecret', e.target.value)}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full bg-[#051024] border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none transition-colors placeholder-slate-700"
                 placeholder="Insira o Client Secret"
               />
             </div>
@@ -203,69 +206,73 @@ export function HotmartModal({ isOpen, onClose, config, onChange }: HotmartModal
           <button
             onClick={fetchProducts}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors mb-8 disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-white uppercase tracking-wide text-sm transition-all bg-gradient-to-b from-orange-600 to-orange-700 border-b-4 border-orange-900 hover:brightness-110 active:border-b-0 active:translate-y-1 active:mt-1 mb-8 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             {loading ? 'Buscando...' : 'Atualizar Produtos'}
           </button>
 
           <div className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Produtos e Ofertas</h4>
+            <h4 className="text-lg font-medium text-white mb-4">Produtos e Ofertas</h4>
             {config?.products?.map((product) => (
-              <div key={product.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+              <div key={product.id} className="border border-white/10 rounded-lg overflow-hidden bg-[#0F1E36]">
                 <div
-                  className="bg-gray-50 dark:bg-gray-750 p-4 flex items-center justify-between cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="p-4 flex items-center justify-between cursor-pointer hover:bg-[#1a2e4d] transition-colors"
                   onClick={() => toggleProduct(product.id)}
                 >
-                  <div className="font-medium text-gray-900 dark:text-white">
-                    {product.name} <span className="text-sm text-gray-500 ml-2">(ID: {product.id})</span>
+                  <div className="font-medium text-white">
+                    {product.name} <span className="text-xs text-slate-500 ml-2">(ID: {product.id})</span>
                   </div>
-                  {expandedProducts.has(product.id) ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  {expandedProducts.has(product.id) ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
                 </div>
 
                 {expandedProducts.has(product.id) && (
-                  <div className="p-4 bg-white dark:bg-gray-800 space-y-4">
+                  <div className="p-4 bg-[#051024] space-y-4 border-t border-white/10">
                     <div className="flex justify-end">
                       <button
                         onClick={() => addOffer(product.id)}
-                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                        className="text-xs text-[#D4AF37] hover:text-[#f3d576] flex items-center gap-1 font-bold uppercase tracking-wide"
                       >
                         <Plus className="w-4 h-4" /> Adicionar Oferta
                       </button>
                     </div>
 
                     {product.offers.map((offer, idx) => (
-                      <div key={idx} className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                      <div key={idx} className="bg-[#0F1E36]/50 p-4 rounded-lg border border-white/5">
                         <div className="flex justify-between mb-4">
-                          <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300">Oferta {idx + 1}</h5>
-                          <button onClick={() => removeOffer(product.id, idx)} className="text-red-500 hover:text-red-700">
+                          <h5 className="text-sm font-bold text-slate-300 uppercase">Oferta {idx + 1}</h5>
+                          <button onClick={() => removeOffer(product.id, idx)} className="text-red-500 hover:text-red-400">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <input
-                            type="text"
-                            placeholder="Nome da Oferta"
-                            value={offer.name}
-                            readOnly
-                            className="p-2 text-sm border rounded bg-gray-100 dark:bg-gray-900 dark:border-gray-700 text-gray-500 cursor-not-allowed"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Key da Oferta"
-                            value={offer.key}
-                            readOnly
-                            className="p-2 text-sm border rounded bg-gray-100 dark:bg-gray-900 dark:border-gray-700 text-gray-500 cursor-not-allowed"
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nome da Oferta</label>
+                            <input
+                              type="text"
+                              value={offer.name}
+                              readOnly
+                              className="w-full p-2 text-sm border border-white/5 rounded bg-[#051024] text-slate-500 cursor-not-allowed"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Key da Oferta</label>
+                            <input
+                              type="text"
+                              value={offer.key}
+                              readOnly
+                              className="w-full p-2 text-sm border border-white/5 rounded bg-[#051024] text-slate-500 cursor-not-allowed"
+                            />
+                          </div>
                         </div>
 
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
-                            <p className="text-xs font-semibold text-gray-500 uppercase">IDs dos Fluxos</p>
+                            <p className="text-xs font-bold text-slate-400 uppercase">IDs dos Fluxos</p>
                             <button
                               onClick={() => replicateFlows(product.id, idx)}
-                              className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded transition-colors"
+                              className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1 bg-blue-900/30 px-2 py-1 rounded transition-colors uppercase font-bold tracking-wide"
                               title="Preencher ofertas vazias deste produto com estes fluxos"
                             >
                               <RefreshCw className="w-3 h-3" /> Replicar para vazios
@@ -273,39 +280,39 @@ export function HotmartModal({ isOpen, onClose, config, onChange }: HotmartModal
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Compra Aprovada</label>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Compra Aprovada</label>
                               <input
                                 type="text"
                                 value={offer.flows.approved_purchase || ''}
                                 onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'approved_purchase')}
-                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                                className="w-full bg-[#051024] border border-white/10 rounded px-3 py-2 text-white focus:border-[#D4AF37] focus:outline-none transition-colors text-sm"
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Abandono de Carrinho</label>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Abandono de Carrinho</label>
                               <input
                                 type="text"
                                 value={offer.flows.abandonment || ''}
                                 onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'abandonment')}
-                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                                className="w-full bg-[#051024] border border-white/10 rounded px-3 py-2 text-white focus:border-[#D4AF37] focus:outline-none transition-colors text-sm"
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Cartão Recusado</label>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Cartão Recusado</label>
                               <input
                                 type="text"
                                 value={offer.flows.card_declined || ''}
                                 onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'card_declined')}
-                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                                className="w-full bg-[#051024] border border-white/10 rounded px-3 py-2 text-white focus:border-[#D4AF37] focus:outline-none transition-colors text-sm"
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Reembolso</label>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Reembolso</label>
                               <input
                                 type="text"
                                 value={offer.flows.refund || ''}
                                 onChange={(e) => updateOffer(product.id, idx, 'flows', e.target.value, 'refund')}
-                                className="w-full p-2 text-sm border rounded bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white"
+                                className="w-full bg-[#051024] border border-white/10 rounded px-3 py-2 text-white focus:border-[#D4AF37] focus:outline-none transition-colors text-sm"
                               />
                             </div>
                           </div>
@@ -313,24 +320,24 @@ export function HotmartModal({ isOpen, onClose, config, onChange }: HotmartModal
                       </div>
                     ))}
                     {product.offers.length === 0 && (
-                      <p className="text-sm text-gray-500 text-center py-2">Nenhuma oferta cadastrada.</p>
+                      <p className="text-sm text-slate-500 text-center py-2">Nenhuma oferta cadastrada.</p>
                     )}
                   </div>
                 )}
               </div>
             ))}
             {(!config?.products || config.products.length === 0) && (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-slate-500 text-center py-8">
                 Nenhum produto encontrado. Configure as credenciais e clique em "Atualizar Produtos".
               </p>
             )}
           </div>
         </div>
         
-        <div className="p-6 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex justify-end">
+        <div className="px-4 py-4 md:px-8 md:py-6 bg-[#0F1E36] border-t border-white/10 flex justify-end md:rounded-b-2xl">
           <button
              onClick={onClose}
-             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+             className="px-6 py-3 rounded-lg font-bold text-white uppercase tracking-wide text-sm transition-all bg-gradient-to-b from-green-600 to-green-700 border-b-4 border-green-900 hover:brightness-110 active:border-b-0 active:translate-y-1 active:mt-1"
           >
             Confirmar Configuração
           </button>
