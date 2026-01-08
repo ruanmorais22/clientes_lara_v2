@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Upload, ImageIcon } from 'lucide-react';
-import { Project } from '../../types';
+import { X, Save, Upload, ImageIcon, ShoppingCart } from 'lucide-react';
+import { Project, HotmartConfig } from '../../types';
+import { HotmartModal } from '../Dashboard/Modals/HotmartModal';
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -18,6 +19,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
   const [prompt_analise, setPromptAnalise] = useState('');
   const [prompt_relatorio, setPromptRelatorio] = useState('');
   const [config, setConfig] = useState<any>({});
+  const [hotmartConfig, setHotmartConfig] = useState<HotmartConfig | undefined>(undefined);
+  const [showHotmartModal, setShowHotmartModal] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -27,6 +30,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       setNotes(project.notes || '');
       setPromptAnalise(project.prompt_analise || '');
       setPromptRelatorio(project.prompt_relatorio || '');
+      setHotmartConfig(project.hotmart_config);
       setConfig({
         'Quebra de mensagens': project['Quebra de mensagens'],
         'Quantidade de blocos': project['Quantidade de blocos'],
@@ -59,6 +63,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       setPromptAnalise('');
       setPromptRelatorio('');
       setConfig({});
+      setHotmartConfig(undefined);
     }
   }, [project]);
 
@@ -72,6 +77,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       notes,
       prompt_analise,
       prompt_relatorio,
+      hotmart_config: hotmartConfig,
       ...config,
     } as Project);
   };
@@ -108,9 +114,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
               {project ? 'Editar Prompt' : 'Novo Prompt'}
             </h3>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-white p-2">
-            <X size={24} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowHotmartModal(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors mr-2"
+              title="Configurar Hotmart"
+            >
+              <ShoppingCart size={20} />
+              <span className="hidden md:inline text-sm font-medium">Hotmart</span>
+            </button>
+            <button onClick={onClose} className="text-slate-500 hover:text-white p-2">
+              <X size={24} />
+            </button>
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto bg-[#051024]/50">
         <form onSubmit={handleSubmit}>
@@ -236,6 +252,13 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
           </form>
         </div>
       </div>
+      
+      <HotmartModal
+        isOpen={showHotmartModal}
+        onClose={() => setShowHotmartModal(false)}
+        config={hotmartConfig || {}}
+        onChange={setHotmartConfig}
+      />
     </div>
   );
 };

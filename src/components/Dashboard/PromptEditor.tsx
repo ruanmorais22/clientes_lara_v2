@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Prompt, CustomField } from '../../types';
-import { ArrowLeft, Upload, Save, Settings2, X, MessageSquare, Plus, Trash2 } from 'lucide-react';
+import { Prompt, CustomField, HotmartConfig } from '../../types';
+import { ArrowLeft, Upload, Save, Settings2, X, MessageSquare, Plus, Trash2, ShoppingCart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { BubbleChat } from 'flowise-embed-react';
+import { HotmartModal } from '../Modals/HotmartModal';
 import { v4 as uuidv4 } from 'uuid';
 
 interface PromptEditorProps {
@@ -45,6 +46,7 @@ export function PromptEditor({ promptId, channel, onBack }: PromptEditorProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showAIHelper, setShowAIHelper] = useState(false);
+  const [showHotmartModal, setShowHotmartModal] = useState(false);
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [existingFieldIds, setExistingFieldIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<'prompt' | 'relatorio' | 'analise'>('prompt');
@@ -245,6 +247,8 @@ export function PromptEditor({ promptId, channel, onBack }: PromptEditorProps) {
 
   const handleSave = async () => {
     try {
+      // Ensure hotmart_config is saved properly (it's part of prompt state already)
+      
       // First save the prompt
       let promptResult;
       if (promptId) {
@@ -425,6 +429,13 @@ export function PromptEditor({ promptId, channel, onBack }: PromptEditorProps) {
             >
               <Settings2 className="w-4 h-4" />
               Configurações
+            </button>
+            <button
+              onClick={() => setShowHotmartModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Eventos Checkout
             </button>
             <button
               onClick={handleSave}
@@ -668,6 +679,14 @@ export function PromptEditor({ promptId, channel, onBack }: PromptEditorProps) {
           </div>
         </div>
       )}
+
+      {/* Hotmart Modal */}
+      <HotmartModal
+        isOpen={showHotmartModal}
+        onClose={() => setShowHotmartModal(false)}
+        config={prompt.hotmart_config || {}}
+        onChange={(config) => setPrompt(prev => ({ ...prev, hotmart_config: config }))}
+      />
 
       {/* AI Helper */}
       {showAIHelper && (

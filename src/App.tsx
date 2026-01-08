@@ -102,6 +102,7 @@ function App() {
         'lara_grupo': project['lara_grupo'],
         'link_planilha': project['link_planilha'],
         'prompt_config': project['prompt_config'],
+        'hotmart_config': project.hotmart_config,
       };
 
       if (editingProject) {
@@ -120,6 +121,7 @@ function App() {
       }
       setIsProjectModalOpen(false);
       setEditingProject(null);
+      window.location.reload();
     } catch (error) {
       toast.error('Erro ao salvar projeto.');
     }
