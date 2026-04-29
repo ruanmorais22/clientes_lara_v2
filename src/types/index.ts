@@ -21,6 +21,30 @@ export interface HotmartConfig {
   products?: HotmartProduct[];
 }
 
+export interface EduzzOffer {
+  key: string;
+  name: string;
+  flows: {
+    approved_purchase?: string;
+    abandonment?: string;
+    card_declined?: string;
+    refund?: string;
+  };
+}
+
+export interface EduzzProduct {
+  id: number | string;
+  name: string;
+  offers: EduzzOffer[];
+}
+
+export interface EduzzConfig {
+  email?: string;
+  publicKey?: string;
+  apiKey?: string;
+  products?: EduzzProduct[];
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -55,6 +79,7 @@ export interface Project {
   'link_planilha'?: string;
   'prompt_config'?: boolean;
   hotmart_config?: HotmartConfig;
+  eduzz_config?: EduzzConfig;
 }
 
 export interface Folder {

@@ -103,6 +103,7 @@ function App() {
         'link_planilha': project['link_planilha'],
         'prompt_config': project['prompt_config'],
         'hotmart_config': project.hotmart_config,
+        'eduzz_config': project.eduzz_config,
       };
 
       if (editingProject) {

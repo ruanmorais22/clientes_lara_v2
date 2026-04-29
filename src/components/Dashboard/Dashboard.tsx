@@ -84,6 +84,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeTab, currentFolder, 
         'link_planilha': p['link_planilha'],
         'prompt_config': p['prompt_config'],
         hotmart_config: p['hotmart_config'],
+        eduzz_config: p['eduzz_config'],
       })) as Project[];
       setProjects(mappedProjects || []);
     } catch (error) {

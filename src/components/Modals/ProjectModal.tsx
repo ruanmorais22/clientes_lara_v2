@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Upload, ImageIcon, ShoppingCart } from 'lucide-react';
-import { Project, HotmartConfig } from '../../types';
+import { X, Save, Upload, ImageIcon, ShoppingCart, Store } from 'lucide-react';
+import { Project, HotmartConfig, EduzzConfig } from '../../types';
 import { HotmartModal } from '../Dashboard/Modals/HotmartModal';
+import { EduzzModal } from '../Dashboard/Modals/EduzzModal';
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -21,6 +22,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
   const [config, setConfig] = useState<any>({});
   const [hotmartConfig, setHotmartConfig] = useState<HotmartConfig | undefined>(undefined);
   const [showHotmartModal, setShowHotmartModal] = useState(false);
+  const [eduzzConfig, setEduzzConfig] = useState<EduzzConfig | undefined>(undefined);
+  const [showEduzzModal, setShowEduzzModal] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -31,6 +34,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       setPromptAnalise(project.prompt_analise || '');
       setPromptRelatorio(project.prompt_relatorio || '');
       setHotmartConfig(project.hotmart_config);
+      setEduzzConfig(project.eduzz_config);
       setConfig({
         'Quebra de mensagens': project['Quebra de mensagens'],
         'Quantidade de blocos': project['Quantidade de blocos'],
@@ -64,6 +68,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       setPromptRelatorio('');
       setConfig({});
       setHotmartConfig(undefined);
+      setEduzzConfig(undefined);
     }
   }, [project]);
 
@@ -78,6 +83,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
       prompt_analise,
       prompt_relatorio,
       hotmart_config: hotmartConfig,
+      eduzz_config: eduzzConfig,
       ...config,
     } as Project);
   };
@@ -117,11 +123,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowHotmartModal(true)}
-              className="flex items-center gap-2 px-3 py-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors mr-2"
+              className="flex items-center gap-2 px-3 py-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors"
               title="Configurar Hotmart"
             >
               <ShoppingCart size={20} />
               <span className="hidden md:inline text-sm font-medium">Hotmart</span>
+            </button>
+            <button
+              onClick={() => setShowEduzzModal(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors mr-2"
+              title="Configurar Eduzz"
+            >
+              <Store size={20} />
+              <span className="hidden md:inline text-sm font-medium">Eduzz</span>
             </button>
             <button onClick={onClose} className="text-slate-500 hover:text-white p-2">
               <X size={24} />
@@ -258,6 +272,13 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onS
         onClose={() => setShowHotmartModal(false)}
         config={hotmartConfig || {}}
         onChange={setHotmartConfig}
+      />
+
+      <EduzzModal
+        isOpen={showEduzzModal}
+        onClose={() => setShowEduzzModal(false)}
+        config={eduzzConfig || {}}
+        onChange={setEduzzConfig}
       />
     </div>
   );
